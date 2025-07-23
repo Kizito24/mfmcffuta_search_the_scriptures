@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spin the Wheel</title>
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: 'Helvetica Neue', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 150px;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    .wheel {
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      border: 5px solid #ccc;
+      position: relative;
+      transition: transform 5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      text-align: right;
+      padding: 10px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .segment:nth-child(even) {
+      background-color: #FFEAD8;
+    }
+
+    .segment:nth-child(odd) {
+      background-color: #9B177E;
+      border-top: 2px solid black;
+    }
+
+    .needle {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid black;
+      position: absolute;
+      top: -50px;
+      left: calc(50% - 20px);
+      z-index: 10;
+    }
+
+    button {
+      margin-top: 140px;
+      padding: 10px 30px;
+      font-size: 16px;
+      background-color: #511D43;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 Search the Scriptures Wheel</h1>
+  <div class="wheel-container">
+    <div class="needle"></div>
+    <div class="wheel" id="wheel">
+      <!-- Segments will be injected by JS -->
+    </div>
+  </div>
+  <button onclick="spinWheel()">Spin</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    const options = ["Peace hub", "Grace Hub", "Love Hub", "Revival Hub", "Fire Hub", "Destiny hub"];
+    const wheel = document.getElementById("wheel");
+    const result = document.getElementById("result");
+
+    const segmentAngle = 360 / options.length;
+
+    // Dynamically create segments
+    options.forEach((opt, index) => {
+      const segment = document.createElement("div");
+      segment.className = "segment";
+      segment.style.transform = `rotate(${index * segmentAngle}deg) skewY(${90 - segmentAngle}deg)`;
+      segment.innerHTML = `<div style="transform: skewY(${-(90 - segmentAngle)}deg) rotate(${segmentAngle / 2}deg); position: relative; left: -20%; text-shadow: 0 0 5px #000;">${opt}</div>`;
+      wheel.appendChild(segment);
+    });
+
+    let currentRotation = 0;
+
+    function spinWheel() {
+  const randomIndex = Math.floor(Math.random() * options.length);
+  const fullRotations = 5;
+  console.log(randomIndex);
+
+  // The pointer is at the top, so calculate the angle accordingly
+  const angleToStop = 360 - (randomIndex * segmentAngle + segmentAngle / 2);
+
+  const totalRotation = fullRotations * 360 + angleToStop;
+  currentRotation += totalRotation;
+
+  wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+  setTimeout(() => {
+    result.textContent = `🎉 Result: ${options[randomIndex]}`;
+  }, 5200);
+}
+  </script>
+</body>
+</html>
