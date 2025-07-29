@@ -7,30 +7,48 @@ CSV_FILE = 'hubs.csv'
 
 HUBS = [
     {
-        "name": "Love Hub",
-        "description": "A hub focused on community outreach and care.",
+        "name": "Hub of Wisdom",
+        "description": "A gathering of seekers and thinkers, led by divine insight. Members of this hub are encouraged to pursue knowledge, discernment, and spiritual understanding.",
         "whatsapp": "https://wa.me/xxxxxxxxxx1",
         "theme": {
-            "color": "danger",
-            "icon": "bi-heart-fill"
+            "color": "info",
+            "icon": "bi-lightbulb-fill"
         }
     },
     {
-        "name": "Faith Hub",
-        "description": "This hub builds spiritual strength through prayer.",
+        "name": "Hub of Righteousness",
+        "description": "This hub stands for purity, integrity, and a life of holiness. Together, members grow in character, discipline, and the pursuit of God’s standards.",
         "whatsapp": "https://wa.me/xxxxxxxxxx2",
         "theme": {
-            "color": "primary",
-            "icon": "bi-cloud-lightning-rain-fill"
+            "color": "success",
+            "icon": "bi-shield-check"
         }
     },
     {
-        "name": "Power Hub",
-        "description": "Focused on youth leadership and evangelism.",
+        "name": "Hub of Greatness",
+        "description": "A place where potential meets purpose. This hub inspires excellence in all areas of life and spiritual growth toward greatness in Christ.",
         "whatsapp": "https://wa.me/xxxxxxxxxx3",
         "theme": {
-            "color": "success",
-            "icon": "bi-lightning-charge-fill"
+            "color": "warning",
+            "icon": "bi-trophy-fill"
+        }
+    },
+     {
+        "name": "Hub of the Mighty",
+        "description": "Made for warriors in the spirit. Members of this hub are prayerful, bold, and fearless — equipped to overcome battles and impact lives.",
+        "whatsapp": "https://wa.me/xxxxxxxxxx4",
+        "theme": {
+            "color": "warning",
+            "icon": "bi-lightning-fill"
+        }
+    },
+      {
+        "name": "The Overcomers Hub",
+        "description": "This hub celebrates victory over trials. Members are encouraged to share testimonies, lift one another, and walk daily in triumph through Christ.",
+        "whatsapp": "https://wa.me/xxxxxxxxxx5",
+        "theme": {
+            "color": "danger",
+            "icon": "bi-award-fill"
         }
     }
 ]
