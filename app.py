@@ -1,9 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-import csv, os, random
+import sqlite3, os, random
 
 app = Flask(__name__)
-
-CSV_FILE = 'hubs.csv'
+DB_FILE = 'hubs.db'
 
 HUBS = [
     {
@@ -33,7 +32,7 @@ HUBS = [
             "icon": "bi-trophy-fill"
         }
     },
-     {
+    {
         "name": "Hub of the Mighty",
         "description": "Made for warriors in the spirit. Members of this hub are prayerful, bold, and fearless — equipped to overcome battles and impact lives.",
         "whatsapp": "https://wa.me/xxxxxxxxxx4",
@@ -42,7 +41,7 @@ HUBS = [
             "icon": "bi-lightning-fill"
         }
     },
-      {
+    {
         "name": "The Overcomers Hub",
         "description": "This hub celebrates victory over trials. Members are encouraged to share testimonies, lift one another, and walk daily in triumph through Christ.",
         "whatsapp": "https://wa.me/xxxxxxxxxx5",
@@ -53,16 +52,36 @@ HUBS = [
     }
 ]
 
-def load_assignments():
-    if not os.path.exists(CSV_FILE):
-        return {}
-    with open(CSV_FILE, newline='') as f:
-        return {row[0]: {"phone": row[1], "hub": row[2]} for row in csv.reader(f)}
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS assignments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL,
+            phone TEXT NOT NULL,
+            hub_name TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def load_assignment(name):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('SELECT phone, hub_name FROM assignments WHERE name = ?', (name,))
+    row = c.fetchone()
+    conn.close()
+    if row:
+        return {"phone": row[0], "hub": row[1]}
+    return None
 
 def save_assignment(name, phone, hub_name):
-    with open(CSV_FILE, 'a', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow([name, phone, hub_name])
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('INSERT INTO assignments (name, phone, hub_name) VALUES (?, ?, ?)', (name, phone, hub_name))
+    conn.commit()
+    conn.close()
 
 @app.route('/')
 def home():
@@ -72,10 +91,10 @@ def home():
 def assign():
     name = request.form['name'].strip().title()
     phone = request.form['phone'].strip()
-    assignments = load_assignments()
+    assignment = load_assignment(name)
 
-    if name in assignments:
-        hub_name = assignments[name]["hub"]
+    if assignment:
+        hub_name = assignment["hub"]
         hub = next((h for h in HUBS if h['name'] == hub_name), None)
     else:
         hub = random.choice(HUBS)
@@ -89,4 +108,5 @@ def assign():
     })
 
 if __name__ == '__main__':
+    init_db()
     app.run(debug=True)
