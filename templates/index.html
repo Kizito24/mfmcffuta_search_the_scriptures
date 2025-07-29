@@ -14,15 +14,31 @@
   <style>
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: linear-gradient(135deg, #e0eafc, #cfdef3);
-  background-attachment: fixed;
+  background-image: url('/static/bg1.jpg'); /* Update with your correct image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+ @media (max-width: 768px) {
+    body{
+      background-image: url('/static/vp.jpg'); /* Optional: smaller mobile-optimized version */
+    }
+  }
+
+.background-overlay::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5); /* Adjust darkness */
+    z-index: -1;
+  }
 
 .form-wrapper {
-  background: rgba(255, 255, 255, 0.65);
+  background: #efefef;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 1.5rem;
@@ -36,14 +52,14 @@ body {
 }
 
 .btn-primary {
-  background-color: #007aff;
+  background-color: #640D5F;
   border: none;
   border-radius: 12px;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn-primary:hover {
-  background-color: #005fdb;
+  background-color: #640D5F;
 }
 
 .btn-primary:active {
@@ -68,17 +84,22 @@ body {
 .modal-body {
   font-size: 1rem;
 }
+
+.custom-purple {
+  color: #640D5F !important;
+}
+
   </style>
 </head>
 
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class=" d-flex flex-column min-vh-100 background-overlay">
 
   <!-- Header -->
   <div class="container">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-5 border-bottom">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none text-dark">
         <i class="bi bi-cross me-2 fs-3 text-primary"></i>
-        <span class="fs-4 fw-semibold">MFMCF FUTA - Bible Study Unit</span>
+        <span class=" text-white fs-4 fw-semibold">MFMCF FUTA - Bible Study Unit</span>
       </a>
     </header>
   </div>
@@ -88,7 +109,7 @@ body {
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
         <div class="form-wrapper">
-          <h3 class="text-center text-dark mb-4"><i class="bi bi-people-fill text-primary"></i> Join Your Search the Scriptures Hub</h3>
+          <h3 class="text-center text-dark mb-4"><i class="bi bi-people-fill text-primary custom-purple"></i> Join Your Search the Scriptures Hub</h3>
           <form id="nameForm">
             <div class="mb-4">
               <label for="name" class="form-label">Your Name</label>
@@ -141,9 +162,9 @@ body {
   </div>
 
   <!-- Footer -->
-  <footer class="text-dark text-center py-3 mt-auto">
+  <footer class="text-white text-center py-3 mt-auto">
     <div class="container">
-      © 2025 MFMCF FUTA. All rights reserved.
+      © 2025 MFMCF FUTA - Davidic generation. All rights reserved.
     </div>
   </footer>
 
