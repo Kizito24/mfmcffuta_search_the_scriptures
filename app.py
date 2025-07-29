@@ -1,8 +1,18 @@
 from flask import Flask, render_template, request, jsonify
-import sqlite3, os, random
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import random
+import os
 
 app = Flask(__name__)
-DB_FILE = 'hubs.db'
+
+# MongoDB Setup
+MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')  # or your Atlas URI
+client = MongoClient(MONGO_URI)
+db = client['hub_assignments']
+assignments_col = db['assignments']
+load_dotenv()
+
 
 HUBS = [
     {
@@ -52,37 +62,6 @@ HUBS = [
     }
 ]
 
-def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS assignments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            phone TEXT NOT NULL,
-            hub_name TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-def load_assignment(name):
-    conn = sqlite3.connect(DB_FILE)
-    c = conn.cursor()
-    c.execute('SELECT phone, hub_name FROM assignments WHERE name = ?', (name,))
-    row = c.fetchone()
-    conn.close()
-    if row:
-        return {"phone": row[0], "hub": row[1]}
-    return None
-
-def save_assignment(name, phone, hub_name):
-    conn = sqlite3.connect(DB_FILE)
-    c = conn.cursor()
-    c.execute('INSERT INTO assignments (name, phone, hub_name) VALUES (?, ?, ?)', (name, phone, hub_name))
-    conn.commit()
-    conn.close()
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -91,14 +70,19 @@ def home():
 def assign():
     name = request.form['name'].strip().title()
     phone = request.form['phone'].strip()
-    assignment = load_assignment(name)
 
-    if assignment:
-        hub_name = assignment["hub"]
+    existing = assignments_col.find_one({"name": name})
+
+    if existing:
+        hub_name = existing["hub"]
         hub = next((h for h in HUBS if h['name'] == hub_name), None)
     else:
         hub = random.choice(HUBS)
-        save_assignment(name, phone, hub['name'])
+        assignments_col.insert_one({
+            "name": name,
+            "phone": phone,
+            "hub": hub['name']
+        })
 
     return jsonify({
         "hub": hub['name'],
@@ -108,5 +92,4 @@ def assign():
     })
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True)
