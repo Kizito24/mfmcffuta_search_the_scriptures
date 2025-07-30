@@ -1,19 +1,33 @@
 from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
+from flask_pymongo import PyMongo  # type: ignore
+from flask_session import Session  # ✅ Missing import added
 from dotenv import load_dotenv
 import random
 import os
 
+# Load .env file (if used)
+load_dotenv()
+
 app = Flask(__name__)
 
 # MongoDB Setup
-MONGO_URI = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')  # or your Atlas URI
-client = MongoClient(MONGO_URI)
-db = client['hub_assignments']
-assignments_col = db['assignments']
-load_dotenv()
+app.config["MONGO_URI"] = "mongodb+srv://kizitochiazor:W8tvPuFJWDxesxqs@cluster0.lq5sv.mongodb.net/hub_assignments?retryWrites=true&w=majority"
+mongo = PyMongo(app)
 
+# Session Configuration
+app.config["SESSION_TYPE"] = "mongodb"
+app.config["SESSION_MONGODB"] = mongo.cx  # ✅ Use PyMongo client
+app.config["SESSION_MONGODB_DB"] = "hub_assignments"
+app.config["SESSION_MONGODB_COLLECT"] = "sessions"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_USE_SIGNER"] = True
+Session(app)
 
+# Assign collection after mongo is set
+db = mongo.cx["hub_assignments"]
+assignments_col = db["assignments"]
+
+# Hub data
 HUBS = [
     {
         "name": "Hub of Wisdom",
