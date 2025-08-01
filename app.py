@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-from flask_pymongo import PyMongo  # type: ignore
-from flask_session import Session  # ✅ Missing import added
+from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 import random
 import os
 
-# Load .env file (if used)
+# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
@@ -13,66 +12,40 @@ app = Flask(__name__)
 # MongoDB Setup
 app.config["MONGO_URI"] = "mongodb+srv://kizitochiazor:W8tvPuFJWDxesxqs@cluster0.lq5sv.mongodb.net/hub_assignments?retryWrites=true&w=majority"
 mongo = PyMongo(app)
-
-# Session Configuration
-app.config["SESSION_TYPE"] = "mongodb"
-app.config["SESSION_MONGODB"] = mongo.cx  # ✅ Use PyMongo client
-app.config["SESSION_MONGODB_DB"] = "hub_assignments"
-app.config["SESSION_MONGODB_COLLECT"] = "sessions"
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_USE_SIGNER"] = True
-Session(app)
-
-# Assign collection after mongo is set
 db = mongo.cx["hub_assignments"]
 assignments_col = db["assignments"]
 
-# Hub data
+# Hubs
 HUBS = [
     {
         "name": "Hub of Wisdom",
-        "description": "A gathering of seekers and thinkers, led by divine insight. Members of this hub are encouraged to pursue knowledge, discernment, and spiritual understanding.",
+        "description": "Welcome to the Hub of Wisdom Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Proverbs 4:7. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
         "whatsapp": "https://wa.me/xxxxxxxxxx1",
-        "theme": {
-            "color": "info",
-            "icon": "bi-lightbulb-fill"
-        }
+        "theme": {"color": "info", "icon": "bi-lightbulb-fill"}
     },
     {
         "name": "Hub of Righteousness",
-        "description": "This hub stands for purity, integrity, and a life of holiness. Together, members grow in character, discipline, and the pursuit of God’s standards.",
+        "description": "Welcome to the Hub of Righteousness Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Malachi 4:2. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
         "whatsapp": "https://wa.me/xxxxxxxxxx2",
-        "theme": {
-            "color": "success",
-            "icon": "bi-shield-check"
-        }
+        "theme": {"color": "success", "icon": "bi-shield-check"}
     },
     {
         "name": "Hub of Greatness",
-        "description": "A place where potential meets purpose. This hub inspires excellence in all areas of life and spiritual growth toward greatness in Christ.",
+        "description": "Welcome to the Hub of Greatness Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Genesis 12:2. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
         "whatsapp": "https://wa.me/xxxxxxxxxx3",
-        "theme": {
-            "color": "warning",
-            "icon": "bi-trophy-fill"
-        }
+        "theme": {"color": "warning", "icon": "bi-trophy-fill"}
     },
     {
         "name": "Hub of the Mighty",
-        "description": "Made for warriors in the spirit. Members of this hub are prayerful, bold, and fearless — equipped to overcome battles and impact lives.",
+        "description": "Welcome to the Hub of the Mighty Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Judges 6:12. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
         "whatsapp": "https://wa.me/xxxxxxxxxx4",
-        "theme": {
-            "color": "warning",
-            "icon": "bi-lightning-fill"
-        }
+        "theme": {"color": "warning", "icon": "bi-lightning-fill"}
     },
     {
         "name": "The Overcomers Hub",
-        "description": "This hub celebrates victory over trials. Members are encouraged to share testimonies, lift one another, and walk daily in triumph through Christ.",
+        "description": "Welcome to the Overcomers Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is 1 John 4:4. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
         "whatsapp": "https://wa.me/xxxxxxxxxx5",
-        "theme": {
-            "color": "danger",
-            "icon": "bi-award-fill"
-        }
+        "theme": {"color": "danger", "icon": "bi-award-fill"}
     }
 ]
 
@@ -85,11 +58,17 @@ def assign():
     name = request.form['name'].strip().title()
     phone = request.form['phone'].strip()
 
-    existing = assignments_col.find_one({"name": name})
+    if phone.startswith("0"):
+        phone = "+234" + phone[1:]
+    elif phone.startswith("234") and not phone.startswith("+"):
+        phone = "+" + phone
+
+    existing = assignments_col.find_one({"phone": phone})
 
     if existing:
         hub_name = existing["hub"]
-        hub = next((h for h in HUBS if h['name'] == hub_name), None)
+        hub = next((h for h in HUBS if h["name"] == hub_name), None)
+        message = "You have been previously assigned to this hub."
     else:
         hub = random.choice(HUBS)
         assignments_col.insert_one({
@@ -97,12 +76,14 @@ def assign():
             "phone": phone,
             "hub": hub['name']
         })
+        message = "You have been successfully assigned to a hub!"
 
     return jsonify({
         "hub": hub['name'],
         "description": hub['description'],
         "whatsapp": hub['whatsapp'],
-        "theme": hub['theme']
+        "theme": hub['theme'],
+        "message": message
     })
 
 if __name__ == '__main__':
