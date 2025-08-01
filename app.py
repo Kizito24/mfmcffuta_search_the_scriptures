@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, jsonify
-from flask_pymongo import PyMongo
-from dotenv import load_dotenv
+from flask import Flask, render_template, request, jsonify # type: ignore
+from flask_pymongo import PyMongo # type: ignore
+from dotenv import load_dotenv # type: ignore
 import random
 import os
 
@@ -20,31 +20,31 @@ HUBS = [
     {
         "name": "Hub of Wisdom",
         "description": "Welcome to the Hub of Wisdom Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Proverbs 4:7. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
-        "whatsapp": "https://wa.me/xxxxxxxxxx1",
+        "whatsapp": "https://chat.whatsapp.com/Cdf0FcUylNG8yQpiERGweO?mode=ac_t",
         "theme": {"color": "info", "icon": "bi-lightbulb-fill"}
     },
     {
         "name": "Hub of Righteousness",
         "description": "Welcome to the Hub of Righteousness Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Malachi 4:2. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
-        "whatsapp": "https://wa.me/xxxxxxxxxx2",
+        "whatsapp": "https://chat.whatsapp.com/ImkpsadXk8LDsxicZCYwLk?mode=ac_t",
         "theme": {"color": "success", "icon": "bi-shield-check"}
     },
     {
         "name": "Hub of Greatness",
         "description": "Welcome to the Hub of Greatness Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Genesis 12:2. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
-        "whatsapp": "https://wa.me/xxxxxxxxxx3",
+        "whatsapp": "https://chat.whatsapp.com/H2mbJkUKVKQK1hoouSld6z?mode=ac_t",
         "theme": {"color": "warning", "icon": "bi-trophy-fill"}
     },
     {
         "name": "Hub of the Mighty",
         "description": "Welcome to the Hub of the Mighty Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is Judges 6:12. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
-        "whatsapp": "https://wa.me/xxxxxxxxxx4",
+        "whatsapp": "https://chat.whatsapp.com/HQLaTWBGw642zU0tpMaDXH?mode=ac_t",
         "theme": {"color": "warning", "icon": "bi-lightning-fill"}
     },
     {
         "name": "The Overcomers Hub",
         "description": "Welcome to the Overcomers Family 🙏🏼\n\nWe are excited to have you on board! Our hub is dedicated to nurturing your spiritual growth and fostering a community of love, support, and encouragement.\n\nOur anchor scripture is 1 John 4:4. And we believe it will inspire and guide you.\nAs you fellowship with your hub members, remember to share love, kindness, and respect 🙇🏾.\nGod bless 🙏",
-        "whatsapp": "https://wa.me/xxxxxxxxxx5",
+        "whatsapp": "https://chat.whatsapp.com/KLyC1rZGQmE36r3pMQiJgw?mode=ac_t",
         "theme": {"color": "danger", "icon": "bi-award-fill"}
     }
 ]
